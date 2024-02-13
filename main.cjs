@@ -61,17 +61,17 @@ app.post('/bike', (request, response) => {
     })
 })
 })
-// to sort out last element
-// app.get('/bike',function(req,res){
-//     const lastelement = []
-//     db.collection('bike').find().sort({ _id: -1 }).limit(1)
-//     .forEach(element=>  lastelement.push(element))
-//     .then (function(){
-//         res.json(lastelement)
-//     }).catch(function(){
-//         res.send(console.log('could not find'))
-//     })
-// })
+//to sort out last element
+app.get('/bike',function(req,res){
+    const lastelement = []
+    db.collection('bike').find().sort({ _id: -1 }).limit(1)
+    .forEach(element=>  lastelement.push(element))
+    .then (function(){
+        res.json(lastelement)
+    }).catch(function(){
+        res.send(console.log('could not find'))
+    })
+})
 
 
 
