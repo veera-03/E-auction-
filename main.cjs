@@ -1,9 +1,10 @@
 const express = require('express')
+const cors = require('cors')
 const app = express()
 const bodyparser = require('body-parser')
 app.use(bodyparser.json())
 const {connectto, returnto} = require('./dbconnection.cjs')
-
+app.use(cors())
 connectto(function(error){
     if(error){
         console.log('could not connect database')
@@ -62,14 +63,14 @@ app.post('/bike', (request, response) => {
 })
 })
 //to sort out last element
-app.get('/bike',function(req,res){
+app.get('/bikeresult',function(request,response){
     const lastelement = []
     db.collection('bike').find().sort({ _id: -1 }).limit(1)
     .forEach(element=>  lastelement.push(element))
     .then (function(){
-        res.json(lastelement)
+        response.json(lastelement)
     }).catch(function(){
-        res.send(console.log('could not find'))
+        response.send(console.log('could not find'))
     })
 })
 
