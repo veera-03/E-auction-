@@ -5,6 +5,8 @@ const bodyparser = require('body-parser')
 app.use(bodyparser.json())
 const {connectto, returnto} = require('./dbconnection.cjs')
 app.use(cors())
+
+let db
 connectto(function(error){
     if(error){
         console.log('could not connect database')
