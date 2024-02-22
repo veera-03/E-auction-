@@ -1,5 +1,3 @@
-import Home from '../Auction-react/src/components/Home'
-
 const express = require('express')
 const cors = require('cors')
 const app = express()
@@ -7,7 +5,6 @@ const bodyparser = require('body-parser')
 app.use(bodyparser.json())
 const {connectto, returnto} = require('./dbconnection.cjs')
 app.use(cors())
-
 let db
 connectto(function(error){
     if(error){
