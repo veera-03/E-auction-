@@ -5,6 +5,7 @@ const bodyparser = require('body-parser')
 app.use(bodyparser.json())
 const {connectto, returnto} = require('./dbconnection.cjs')
 app.use(cors())
+
 let db
 connectto(function(error){
     if(error){
@@ -40,7 +41,9 @@ app.post('/login',function(request,response) {
             "auth":"Invalid login"
         })}
         else{
-            response.send(Home)
+            response.json({
+                "auth" : "successfully login"
+            })
         }
     }).catch(() => {
         response.status(500).send("Something went wrong")
