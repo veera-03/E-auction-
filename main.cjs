@@ -1,3 +1,5 @@
+import Home from '../Auction-react/src/components/Home'
+
 const express = require('express')
 const cors = require('cors')
 const app = express()
@@ -41,9 +43,7 @@ app.post('/login',function(request,response) {
             "auth":"Invalid login"
         })}
         else{
-            response.json({
-                "auth" : "successfully login"
-            })
+            response.send(Home)
         }
     }).catch(() => {
         response.status(500).send("Something went wrong")
