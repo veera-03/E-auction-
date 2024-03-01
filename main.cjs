@@ -41,9 +41,7 @@ app.post('/login',function(request,response) {
             "auth":"Invalid login"
         })}
         else{
-            response.json({
-                "auth" : "successfully login"
-            })
+            response.json("successfully login")
         }
     }).catch(() => {
         response.status(500).send("Something went wrong")
