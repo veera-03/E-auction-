@@ -89,7 +89,7 @@ db.collection('R15Bidding').insertOne(request.body).then(function(){
 })
 })
 //to sort out last element
-app.get('bikebid/1',function(request,response){
+app.get('bikebid/1/bid',function(request,response){
     const lastelement = []
     db.collection('R15Bidding').find().sort({ _id: -1 }).limit(1)
     .forEach(element=>  lastelement.push(element))
