@@ -72,17 +72,22 @@ app.post('/bikebid/1',function(request,response) {
             "auth":"Invalid login"
         })}
         else{
-            db.collection('R15Bidding').insertOne(request.body).then(function(){
                 response.status(201).json({
-                    "Status":"bid successfully"
-                })
-            })
+                    "Status":"confirmed"
+                })  
         }
     }).catch(() => {
         response.status(500).send("Something went wrong")
     })
 })
 
+app.post('/bikebid/1/bid',function(request,response) {
+db.collection('R15Bidding').insertOne(request.body).then(function(){
+    response.status(201).json({
+        "Status":"bid successfully"
+    })
+})
+})
 //to sort out last element
 app.get('bikebid/1',function(request,response){
     const lastelement = []
