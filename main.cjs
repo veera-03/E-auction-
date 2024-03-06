@@ -62,10 +62,31 @@ app.post('/bike', (request, response) => {
     })
 })
 })
+app.post('/bikebid/1',function(request,response) {
+    let users = []
+    db.collection('userdetails').find(request.body).forEach(element => {
+        users.push(element)
+    }).then(() => {
+        if(users == 0){
+        response.json({
+            "auth":"Invalid login"
+        })}
+        else{
+            db.collection('R15Bidding').insertOne(request.body).then(function(){
+                response.status(201).json({
+                    "Status":"bid successfully"
+                })
+            })
+        }
+    }).catch(() => {
+        response.status(500).send("Something went wrong")
+    })
+})
+
 //to sort out last element
-app.get('/bikeresult',function(request,response){
+app.get('bikebid/1',function(request,response){
     const lastelement = []
-    db.collection('bike').find().sort({ _id: -1 }).limit(1)
+    db.collection('R15Bidding').find().sort({ _id: -1 }).limit(1)
     .forEach(element=>  lastelement.push(element))
     .then (function(){
         response.json(lastelement)
