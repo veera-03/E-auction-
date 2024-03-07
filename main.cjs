@@ -90,15 +90,13 @@ db.collection('R15Bidding').insertOne(request.body).then(function(){
 })
 //to sort out last element
 app.get('/bikebid/1/bidresult',function(request,response){
-    const lastelement = {}
+    const lastelement = []
     db.collection('R15Bidding').find().sort({ _id: -1 }).limit(1)
     .forEach(element=>  lastelement.push(element.email))
     .then (function(){
-        response.json(lastelement.email)
+        response.json(lastelement)
     }).catch(function(){
         response.send(console.log('could not find'))
     })
 })
-
-
 
