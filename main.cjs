@@ -88,6 +88,19 @@ db.collection('R15Bidding').insertOne(request.body).then(function(){
     })
 })
 })
+
+// to sort out last updated amount
+app.get('/bikebid/1/bid',function(request,response){
+    const lastamount = []
+    db.collection('R15Bidding').find().sort({ _id: -1 }).limit(1)
+    .forEach(element=>  lastamount.push(element.value))
+    .then (function(){
+        response.json(lastamount)
+    }).catch(function(){
+        response.send(console.log('could not find'))
+    })
+})
+
 //to sort out last element
 app.get('/bikebid/1/bidresult',function(request,response){
     const lastelement = []
