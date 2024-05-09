@@ -12,7 +12,7 @@ connectto(function(error){
         console.log('could not connect database')
     }
     else{
-        const port =  process.env.PORT || 7000
+        const port =  7000
         app.listen(port)
         db = returnto()
         console.log(`running in the port ${port} `)
@@ -93,7 +93,7 @@ db.collection('R15Bidding').insertOne(request.body).then(function(){
 app.get('/bikebid/1/bid',function(request,response){
     const lastamount = []
     db.collection('R15Bidding').find().sort({ _id: -1 }).limit(1)
-    .forEach(element=>  lastamount.push(element.value))
+    .forEach(element=>  lastamount.push(element.amount))
     .then (function(){
         response.json(lastamount)
     }).catch(function(){
