@@ -93,7 +93,7 @@ db.collection('R15Bidding').insertOne(request.body).then(function(){
 app.get('/bikebid/1/bid',function(request,response){
     const lastamount = []
     db.collection('R15Bidding').find().sort({ _id: -1 }).limit(1)
-    .forEach(element=>  lastamount.push(element.amount))
+    .forEach(element=>  lastamount.push(element.newAmount))
     .then (function(){
         response.json(lastamount)
     }).catch(function(){
