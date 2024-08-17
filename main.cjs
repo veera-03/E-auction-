@@ -121,7 +121,7 @@ app.get('/bikebid/1/bidresult',function(request,response){
 
 app.get('/bikebid/2/bidresult',function(request,response){
     const lastelement = []
-    db.collection('Rsuzuki_id2').find().sort({ _id: -1 }).limit(1)
+    db.collection('suzuki_id2').find().sort({ _id: -1 }).limit(1)
     .forEach(element=>  lastelement.push(element.email))
     .then (function(){
         response.json(lastelement)
