@@ -47,22 +47,7 @@ app.post('/login',function(request,response) {
         response.status(500).send("Something went wrong")
     })
 })
-
-app.post('/bike', (request, response) => {
-    // Insert button click event into MongoDB
-    db.collection('bike').insertOne(request.body).then (function(){
-        response.json({
-            "auth":"details add"
-            
-        }) 
-            
-}).catch (function(){
-    response.json({
-        "auth":"not added"
-    })
-})
-})
-app.post('/bikebid/1',function(request,response) {
+app.post('/bikebid/user_confirm',function(request,response) {
     let users = []
     db.collection('userdetails').find(request.body).forEach(element => {
         users.push(element)
