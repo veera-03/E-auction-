@@ -66,6 +66,8 @@ app.post('/bikebid/user_confirm',function(request,response) {
     })
 })
 
+
+// BIDDING UPDATE
 app.post('/bikebid/1/bid',function(request,response) {
 db.collection('R15Bidding').insertOne(request.body).then(function(){
     response.status(201).json({
@@ -74,10 +76,29 @@ db.collection('R15Bidding').insertOne(request.body).then(function(){
 })
 })
 
+app.post('/bikebid/2/bid',function(request,response) {
+    db.collection('suzuki_id2').insertOne(request.body).then(function(){
+        response.status(201).json({
+            "Status":"bid successfully"
+        })
+    })
+    })
+
 // to sort out last updated amount
 app.get('/bikebid/1/bid',function(request,response){
     const lastamount = []
     db.collection('R15Bidding').find().sort({ _id: -1 }).limit(1)
+    .forEach(element=>  lastamount.push(element.newAmount))
+    .then (function(){
+        response.json(lastamount)
+    }).catch(function(){
+        response.send(console.log('could not find'))
+    })
+})
+
+app.get('/bikebid/2/bid',function(request,response){
+    const lastamount = []
+    db.collection('suzuki_id2').find().sort({ _id: -1 }).limit(1)
     .forEach(element=>  lastamount.push(element.newAmount))
     .then (function(){
         response.json(lastamount)
@@ -98,3 +119,13 @@ app.get('/bikebid/1/bidresult',function(request,response){
     })
 })
 
+app.get('/bikebid/2/bidresult',function(request,response){
+    const lastelement = []
+    db.collection('Rsuzuki_id2').find().sort({ _id: -1 }).limit(1)
+    .forEach(element=>  lastelement.push(element.email))
+    .then (function(){
+        response.json(lastelement)
+    }).catch(function(){
+        response.send(console.log('could not find'))
+    })
+})
