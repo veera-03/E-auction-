@@ -7,7 +7,7 @@ const {connectto, returnto} = require('./dbconnection.cjs')
 app.use(cors())
 
 let db
-let currentUser = null
+let currentUser 
 connectto(function(error){
     if(error){
         console.log('could not connect database')
@@ -36,7 +36,7 @@ app.post('/login',async(request,response)=> {
   const user = await db.collection('userdetails').findOne(request.body);
  
         if(user){
-            currentUser = user;
+            currentUser = user.email;
             console.log(currentUser)
             response.json("successfully login");
         }
@@ -146,7 +146,7 @@ app.get('/bikebidded_details',async(request,response)=>{
    }
    try{
     console.log(currentUser);
-  const bikebidded_details = await db.collection('R15Bidding').find({email: currentUser.email}).sort({_id: -1 }).limit(1)
+  const bikebidded_details = await db.collection('R15Bidding').find({email: currentUser}).sort({_id: -1 }).limit(1)
    .toArray();
   return response.json(bikebidded_details);
    
