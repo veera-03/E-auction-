@@ -30,9 +30,8 @@ app.post('/signin', function(request,response){
         })
     })
 })
-
+let users = []
 app.post('/login',function(request,response) {
-    let users = []
     db.collection('userdetails').find(request.body).forEach(element => {
         users.push(element)
     }).then(() => {
@@ -41,18 +40,21 @@ app.post('/login',function(request,response) {
             "auth":"Invalid login"
         })}
         else{
+
             response.json("successfully login")
         }
     }).catch(() => {
         response.status(500).send("Something went wrong")
     })
 })
+
+
 app.post('/bikebid/user_confirm',function(request,response) {
-    let users = []
+    let users_confirm = []
     db.collection('userdetails').find(request.body).forEach(element => {
-        users.push(element)
+        users_confirm.push(element)
     }).then(() => {
-        if(users == 0){
+        if(users_confirm == 0){
         response.json({
             "auth":"Invalid login"
         })}
@@ -129,3 +131,14 @@ app.get('/bikebid/2/bidresult',function(request,response){
         response.send(console.log('could not find'))
     })
 })
+const bikebidded_details = []
+app.get('/bikebidded_details',function(request,response){
+    db.collection('R15Bidding').find({users}).sort({_id: -1}).limit(1)
+    .forEach(element=>  bikebidded_details.push(element.email))
+    .then (function(){
+        response.json(bikebidded_details)
+    }).catch(function(){
+        response.send(console.log('could not find'))
+    })
+})
+
