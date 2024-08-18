@@ -7,6 +7,7 @@ const {connectto, returnto} = require('./dbconnection.cjs')
 app.use(cors())
 
 let db
+let currentUser = null
 connectto(function(error){
     if(error){
         console.log('could not connect database')
@@ -30,23 +31,27 @@ app.post('/signin', function(request,response){
         })
     })
 })
-let users = []
-app.post('/login',function(request,response) {
-    db.collection('userdetails').find(request.body).forEach(element => {
-        users.push(element)
-    }).then(() => {
-        if(users == 0){
-        response.json({
-            "auth":"Invalid login"
-        })}
-        else{
-
-            response.json("successfully login")
+app.post('/login',async(request,response)=> {
+   try{
+  const user = await db.collection('userdetails').findOne(request.body);
+ 
+        if(user){
+            currentUser = user;
+            console.log(currentUser)
+            response.json("successfully login");
         }
-    }).catch(() => {
-        response.status(500).send("Something went wrong")
-    })
-})
+        else{
+            response.json({
+                "auth":"Invalid login"
+            });
+           
+        }
+    } catch(error){
+        response.status(500).send("Something went wrong");
+    }
+});
+   
+
 
 
 app.post('/bikebid/user_confirm',function(request,response) {
@@ -131,15 +136,18 @@ app.get('/bikebid/2/bidresult',function(request,response){
         response.send(console.log('could not find'))
     })
 })
-const bikebidded_details = []
-app.get('/bikebidded_details',function(request,response){
-    console.log(users[0]);
-    db.collection('R15Bidding').find({email: users[0]}).sort({_id: -1 }).limit(1)
-    .forEach(element=>  bikebidded_details.push(element))
-    .then (function(){
-        response.json(bikebidded_details)
-    }).catch(function(){
-        response.send(console.log('could not find'))
-    })
-})
+
+app.get('/bikebidded_details',async(request,response)=>{
+   if(!currentUser){
+   return response.json("Login to view history")
+   }
+   try{
+  const bikebidded_details =  db.collection('R15Bidding').find({email: currentUser.email}).sort({_id: -1 }).limit(1)
+   .toArray();
+  return response.json(bikebidded_details);
+   
+} catch(error){
+   return response.status(500).send("Something went wrong");
+}
+});
 
