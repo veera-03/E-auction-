@@ -132,9 +132,11 @@ app.get('/bikebid/2/bidresult',function(request,response){
     })
 })
 const bikebidded_details = []
+
 app.get('/bikebidded_details',function(request,response){
-    db.collection('R15Bidding').find({users}).sort({_id: -1}).limit(1)
-    .forEach(element=>  bikebidded_details.push(element.email))
+    console.log(users);
+    db.collection('R15Bidding').find(users.email).sort({_id: -1}).limit(1)
+    .forEach(element=>  bikebidded_details.push(element))
     .then (function(){
         response.json(bikebidded_details)
     }).catch(function(){
