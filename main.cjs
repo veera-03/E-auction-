@@ -64,6 +64,8 @@ app.post('/bikebid/user_confirm',function(request,response) {
             "auth":"Invalid login"
         })}
         else{
+            
+            console.log(currentUser)
                 response.status(201).json({
                     "Status":"confirmed"
                 })  
@@ -138,11 +140,13 @@ app.get('/bikebid/2/bidresult',function(request,response){
 })
 
 app.get('/bikebidded_details',async(request,response)=>{
-   if(!currentUser){
+    
+    if(!currentUser){
    return response.json("Login to view history")
    }
    try{
-  const bikebidded_details =  db.collection('R15Bidding').find({email: currentUser.email}).sort({_id: -1 }).limit(1)
+    console.log(currentUser);
+  const bikebidded_details = await db.collection('R15Bidding').find({email: currentUser.email}).sort({_id: -1 }).limit(1)
    .toArray();
   return response.json(bikebidded_details);
    
