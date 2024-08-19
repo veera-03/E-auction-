@@ -142,7 +142,7 @@ const bikebidded_details =[]
 app.get('/bikebidded_details',async(request,response)=>{
     
     if(!currentUser){
-   return response.json("Login to view history")
+   return response.json("Login to view bidding history")
    }
    try{
     console.log(currentUser);
