@@ -138,7 +138,7 @@ app.get('/bikebid/2/bidresult',function(request,response){
         response.send(console.log('could not find'))
     })
 })
-
+const bikebidded_details =[]
 app.get('/bikebidded_details',async(request,response)=>{
     
     if(!currentUser){
@@ -146,10 +146,12 @@ app.get('/bikebidded_details',async(request,response)=>{
    }
    try{
     console.log(currentUser);
-  const bikebidded_details = await db.collection('R15Bidding').find({email: currentUser}).sort({_id: -1 }).limit(1)
-   .toArray();
+   await db.collection('R15Bidding').find({email: currentUser}).sort({_id: -1 }).limit(1)
+   .forEach(element =>{
+    bikebidded_details.push(element)
+   })
   return response.json(bikebidded_details);
-   
+  
 } catch(error){
    return response.status(500).send("Something went wrong");
 }
