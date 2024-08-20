@@ -8,7 +8,7 @@ const {connectto, returnto} = require('./dbconnection.cjs');
 
 app.use(express.json());
 app.use(cors({
-    origin: 'https://your-frontend-domain.com', // Specify your frontend's origin
+    origin: 'https://e-auction-frontend-tzat.onrender.com', // Specify your frontend's origin
     credentials: true
 }));
 app.use(session({
