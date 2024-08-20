@@ -60,7 +60,7 @@ app.post('/signin', function(request,response){
         })
     })
 })
-request.session.currentUser = null
+session.currentUser = null
 app.post('/login',async(request,response)=> {
    try{
   const user = await db.collection('userdetails').findOne(request.body);
