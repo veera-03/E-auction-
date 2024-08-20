@@ -30,6 +30,7 @@ app.use(session({
     cookie: {
         secure: process.env.NODE_ENV === 'production', // Only secure in production
         httpOnly: true,
+        sameSite: 'lax' // Ensure SameSite is not causing issues
     }
 }));
 
@@ -64,7 +65,9 @@ app.post('/login',async(request,response)=> {
         if(user){
             request.session.currentUser = user.email;
             console.log(request.session.currentUser)
-            response.json("successfully login");
+            request.session.save(() => {
+                response.json("successfully login");
+            });
         }
         else{
             response.json({
@@ -165,7 +168,7 @@ app.get('/bikebid/2/bidresult',function(request,response){
     })
 })
 app.get('/bikebidded_details',async(request,response)=>{
-    
+    console.log(request.session.currentUser);
     if(!request.session.currentUser){
    return response.json("Login to view bidding history")
    }
