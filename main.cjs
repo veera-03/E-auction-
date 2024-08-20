@@ -7,6 +7,7 @@ app.use(bodyparser.json());
 const {connectto, returnto} = require('./dbconnection.cjs');
 
 app.use(express.json());
+
 const allowedOrigins = [
     'http://localhost:5173',       // Add your local development origin
     'https://e-auction-frontend-tzat.onrender.com' // Your production frontend origin
@@ -61,12 +62,11 @@ app.post('/signin', function(request,response){
 app.post('/login',async(request,response)=> {
    try{
   const user = await db.collection('userdetails').findOne(request.body);
- 
         if(user){
             request.session.currentUser = user.email;
             console.log(request.session.currentUser)
             request.session.save(() => {
-                response.json(request.session.currentUser);
+                response.json("successfully login");
             });
         }
         else{
@@ -79,7 +79,28 @@ app.post('/login',async(request,response)=> {
         response.status(500).send("Something went wrong");
     }
 });
-   
+ 
+app.get('/bikebidded_details',async(request,response)=>{
+    console.log(request.session.currentUser);
+    if(!request.session.currentUser){
+   return response.json("Login to view bidding history")
+   }
+   try{
+    console.log(request.session.currentUser);
+    const bidDetails = await db.collection('R15Bidding').find({email: request.session.currentUser}).sort({_id: -1 }).limit(1)
+   .toArray();
+
+   if (bidDetails.length > 0) {
+    return response.json(bidDetails[0]);  // Return the most recent bidding detail
+} else {
+    return response.json("No bidding history found");
+}
+  
+} catch(error){
+   return response.status(500).send("Something went wrong");
+}
+});
+
 
 
 
@@ -167,24 +188,4 @@ app.get('/bikebid/2/bidresult',function(request,response){
         response.send(console.log('could not find'))
     })
 })
-app.get('/bikebidded_details',async(request,response)=>{
-    console.log(request.session.currentUser);
-    if(!request.session.currentUser){
-   return response.json("Login to view bidding history")
-   }
-   try{
-    console.log(request.session.currentUser);
-    const bidDetails = await db.collection('R15Bidding').find({email: request.session.currentUser}).sort({_id: -1 }).limit(1)
-   .toArray();
-
-   if (bidDetails.length > 0) {
-    return response.json(bidDetails[0]);  // Return the most recent bidding detail
-} else {
-    return response.json("No bidding history found");
-}
-  
-} catch(error){
-   return response.status(500).send("Something went wrong");
-}
-});
 
