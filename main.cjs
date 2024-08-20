@@ -5,8 +5,12 @@ const app = express();
 const bodyparser = require('body-parser');
 app.use(bodyparser.json());
 const {connectto, returnto} = require('./dbconnection.cjs');
-app.use(cors());
+
 app.use(express.json());
+app.use(cors({
+    origin: 'https://your-frontend-domain.com', // Specify your frontend's origin
+    credentials: true
+}));
 app.use(session({
     secret: 'vimal@2003',
     resave: false,
@@ -148,7 +152,6 @@ app.get('/bikebid/2/bidresult',function(request,response){
         response.send(console.log('could not find'))
     })
 })
-const bikebidded_details =[]
 app.get('/bikebidded_details',async(request,response)=>{
     
     if(!request.session.currentUser){
