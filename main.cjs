@@ -7,10 +7,22 @@ app.use(bodyparser.json());
 const {connectto, returnto} = require('./dbconnection.cjs');
 
 app.use(express.json());
+const allowedOrigins = [
+    'http://localhost:5173',       // Add your local development origin
+    'https://e-auction-frontend-tzat.onrender.com' // Your production frontend origin
+];
+
 app.use(cors({
-    origin: 'https://e-auction-frontend-tzat.onrender.com', // Specify your frontend's origin
-    credentials: true
+    origin: function (origin, callback) {
+        if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true // Allow cookies and credentials to be sent
 }));
+
 app.use(session({
     secret: 'vimal@2003',
     resave: false,
