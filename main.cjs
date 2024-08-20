@@ -1,13 +1,23 @@
-const express = require('express')
-const cors = require('cors')
-const app = express()
-const bodyparser = require('body-parser')
-app.use(bodyparser.json())
-const {connectto, returnto} = require('./dbconnection.cjs')
-app.use(cors())
+const express = require('express');
+const cors = require('cors');
+const session = require('express-session');
+const app = express();
+const bodyparser = require('body-parser');
+app.use(bodyparser.json());
+const {connectto, returnto} = require('./dbconnection.cjs');
+app.use(cors());
+app.use(express.json());
+app.use(session({
+    secret: 'vimal@2003',
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        secure: process.env.NODE_ENV === 'production', // Only secure in production
+        httpOnly: true,
+    }
+}));
 
 let db
-let currentUser 
 connectto(function(error){
     if(error){
         console.log('could not connect database')
@@ -36,8 +46,8 @@ app.post('/login',async(request,response)=> {
   const user = await db.collection('userdetails').findOne(request.body);
  
         if(user){
-            currentUser = user.email;
-            console.log(currentUser)
+            request.session.currentUser = user.email;
+            console.log(request.session.currentUser)
             response.json("successfully login");
         }
         else{
@@ -141,16 +151,19 @@ app.get('/bikebid/2/bidresult',function(request,response){
 const bikebidded_details =[]
 app.get('/bikebidded_details',async(request,response)=>{
     
-    if(!currentUser){
+    if(!request.session.currentUser){
    return response.json("Login to view bidding history")
    }
    try{
-    console.log(currentUser);
-   await db.collection('R15Bidding').find({email: currentUser}).sort({_id: -1 }).limit(1)
-   .forEach(element =>{
-    bikebidded_details.push(element)
-   })
-  return response.json(bikebidded_details);
+    console.log(request.session.currentUser);
+    const bidDetails = await db.collection('R15Bidding').find({email: request.session.currentUser}).sort({_id: -1 }).limit(1)
+   .toArray();
+
+   if (bidDetails.length > 0) {
+    return response.json(bidDetails[0]);  // Return the most recent bidding detail
+} else {
+    return response.json("No bidding history found");
+}
   
 } catch(error){
    return response.status(500).send("Something went wrong");
