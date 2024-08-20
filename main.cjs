@@ -99,7 +99,7 @@ app.get('/bikebidded_details',async(request,response)=>{
    if (bidDetails.length > 0) {
     return response.json(bidDetails[0]);  // Return the most recent bidding detail
 } else {
-    return response.json("No bidding history found");
+    return response.json("No bidded history found");
 }
   
 } catch(error){
