@@ -66,7 +66,7 @@ app.post('/login',async(request,response)=> {
             request.session.currentUser = user.email;
             console.log(request.session.currentUser)
             request.session.save(() => {
-                response.json("successfully login");
+                response.json(request.session.currentUser);
             });
         }
         else{
