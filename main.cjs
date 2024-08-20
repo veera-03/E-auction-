@@ -27,11 +27,12 @@ app.use(cors({
 app.use(session({
     secret: 'vimal@2003',
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
         secure: process.env.NODE_ENV === 'production', // Only secure in production
         httpOnly: true,
-        sameSite: 'lax' // Ensure SameSite is not causing issues
+        sameSite: 'lax', // Ensure SameSite is not causing issues
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
 }));
 
@@ -65,8 +66,12 @@ app.post('/login',async(request,response)=> {
         if(user){
             request.session.currentUser = user.email;
             console.log(request.session.currentUser)
-            request.session.save(() => {
-                response.json("successfully login");
+            request.session.save((err) => {
+                if (err) {
+                    console.error("Session save error:", err);
+                    return response.status(500).json({ "error": "Session save failed" });
+                }
+                response.json( "successfully login");
             });
         }
         else{
