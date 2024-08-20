@@ -65,8 +65,8 @@ app.post('/login',async(request,response)=> {
    try{
   const user = await db.collection('userdetails').findOne(request.body);
         if(user){
-            request.session.currentUser = user.email;
-            console.log(request.session.currentUser)
+            session.currentUser = user.email;
+            console.log(session.currentUser)
             request.session.save((err) => {
                 if (err) {
                     console.error("Session save error:", err);
@@ -87,13 +87,13 @@ app.post('/login',async(request,response)=> {
 });
  
 app.get('/bikebidded_details',async(request,response)=>{
-    console.log(request.session.currentUser);
-    if(!request.session.currentUser){
+    console.log(session.currentUser);
+    if(!session.currentUser){
    return response.json("Login to view bidding history")
    }
    try{
-    console.log(request.session.currentUser);
-    const bidDetails = await db.collection('R15Bidding').find({email: request.session.currentUser}).sort({_id: -1 }).limit(1)
+    console.log(session.currentUser);
+    const bidDetails = await db.collection('R15Bidding').find({email: session.currentUser}).sort({_id: -1 }).limit(1)
    .toArray();
 
    if (bidDetails.length > 0) {
