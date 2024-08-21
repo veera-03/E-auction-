@@ -61,18 +61,15 @@ app.post('/signin', function(request,response){
         })
     })
 })
-session.currentUser = null
 app.post('/login',async(request,response)=> {
    try{
   const user = await db.collection('userdetails').findOne(request.body);
         if(user){
-            session.currentUser = user.email;
-            const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
+            const token = jwt.sign({ email: user.email }, 'your-secret-key', { expiresIn: '1h' });
             response.json({ token });
         }
         else{
-            response.json({
-                "auth":"Invalid login"
+            response.json({"auth":"Invalid login"
             });
            
         }
@@ -80,17 +77,28 @@ app.post('/login',async(request,response)=> {
         response.status(500).send("Something gone wrong");
     }
 });
- 
-app.get('/bikebidded_details',async(request,response)=>{
-    console.log(session.currentUser);
-    if(!session.currentUser){
-   return response.json("Login to view bidding history")
-   }
-   try{
-    console.log(session.currentUser);
-    const bidDetails = await db.collection('R15Bidding').find({email: session.currentUser}).sort({_id: -1 }).limit(1)
-   .toArray();
 
+const verifyToken = (request, response, next) => {
+    const authHeader = request.header('Authorization');
+    if (!authHeader) {
+        return response.status(401).send('Access denied. No token provided.');
+    }
+
+    const token = authHeader.replace('Bearer ', '');
+    try {
+        const decoded = jwt.verify(token, 'your-secret-key');
+        request.userEmail = decoded.email; // Attach the email to the request
+        next();
+    } catch (error) {
+        response.status(400).send('Invalid token');
+    }
+};
+
+ 
+app.get('/bikebidded_details',verifyToken,async(request,response)=>{
+   try{
+    const bidDetails = await db.collection('R15Bidding').find({email: request.userEmail}).sort({_id: -1 }).limit(1)
+   .toArray();
    if (bidDetails.length > 0) {
     return response.json(bidDetails[0]);  // Return the most recent bidding detail
 } else {
