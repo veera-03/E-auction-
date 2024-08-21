@@ -77,7 +77,7 @@ app.post('/login',async(request,response)=> {
            
         }
     } catch(error){
-        response.status(500).send("Something went wrong");
+        response.status(500).send("Something gone wrong");
     }
 });
  
