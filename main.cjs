@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const app = express();
+const jwt = require('jsonwebtoken');
 const bodyparser = require('body-parser');
 app.use(bodyparser.json());
 const {connectto, returnto} = require('./dbconnection.cjs');
@@ -66,14 +67,8 @@ app.post('/login',async(request,response)=> {
   const user = await db.collection('userdetails').findOne(request.body);
         if(user){
             session.currentUser = user.email;
-            console.log(session.currentUser)
-            request.session.save((err) => {
-                if (err) {
-                    console.error("Session save error:", err);
-                    return response.status(500).json({ "error": "Session save failed" });
-                }
-                response.json( "successfully login");
-            });
+            const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
+            response.json({ token });
         }
         else{
             response.json({
