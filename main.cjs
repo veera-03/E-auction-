@@ -125,26 +125,25 @@ app.get('/bikebidded_details',verifyToken,async(request,response)=>{
 
 
 
-app.post('/bikebid/user_confirm',function(request,response) {
-    let users_confirm = []
-    db.collection('userdetails').find(request.body).forEach(element => {
-        users_confirm.push(element)
-    }).then(() => {
-        if(users_confirm == 0){
-        response.json({
-            "auth":"Invalid login"
-        })}
-        else{
-            
-            console.log(currentUser)
-                response.status(201).json({
-                    "Status":"confirmed"
-                })  
+app.post('/bikebid/user_confirm', async function(request, response) {
+    try {
+        let users_confirm = await db.collection('userdetails').find(request.body).toArray();
+        
+        if(users_confirm.length === 0){
+            response.json({
+                "auth": "Invalid login"
+            });
+        } else {
+            console.log(users_confirm);
+            response.status(201).json({
+                "Status": "confirmed"
+            });
         }
-    }).catch(() => {
-        response.status(500).send("Something went wrong")
-    })
-})
+    } catch (err) {
+        console.error(err);
+        response.status(500).send("Something went wrong");
+    }
+});
 
 
 // BIDDING UPDATE
