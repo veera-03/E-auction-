@@ -97,10 +97,22 @@ const verifyToken = (request, response, next) => {
  
 app.get('/bikebidded_details',verifyToken,async(request,response)=>{
    try{
-    const bidDetails = await db.collection('R15Bidding').find({email: request.userEmail}).sort({_id: -1 }).limit(1)
-   .toArray();
-   if (bidDetails.length > 0) {
-    return response.json(bidDetails[0]);  // Return the most recent bidding detail
+    const biddetails = []
+    await db.collection('R15Bidding').find({email: request.userEmail}).sort({_id: -1 }).limit(1)
+   .forEach((items)=>{
+    biddetails.push(items);
+   })
+    await db.collection('suzuki_id2').find({email: request.userEmail}).sort({_id: -1 }).limit(1)
+   .forEach((items)=>{
+    biddetails.push(items);
+   })
+   await db.collection('Royal_Enfield_id3').find({email: request.userEmail}).sort({_id: -1 }).limit(1)
+   .forEach((items)=>{
+    biddetails.push(items);
+   })
+   
+   if (biddetails.length > 0) {
+    return response.json(biddetails);  // Return the most recent bidding detail
 } else {
     return response.json("No bidded history found");
 }
