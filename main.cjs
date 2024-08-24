@@ -65,7 +65,7 @@ app.post('/login',async(request,response)=> {
    try{
   const user = await db.collection('userdetails').findOne(request.body);
         if(user){
-            const token = jwt.sign({ email: user.email }, 'your-secret-key', { expiresIn: '1h' });
+            const token = jwt.sign({ email: user.email }, 'your-secret-key', { expiresIn: '8h' });
             response.json({ token });
         }
         else{
