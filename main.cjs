@@ -94,7 +94,32 @@ const verifyToken = (request, response, next) => {
     }
 };
 
- 
+app.post('/addbikedetails', function(request,response){
+    db.collection('live_bike_auction').insertOne(request.body).then(function(){
+        response.status(201).json({
+            "Status":"Sign in successfully"
+        })
+    }).catch(function(){
+        response.status(500).json({
+            "Status":"could not signin try again"
+        })
+    })
+})
+
+app.get('/getlivebikedetails',function(request, response){
+    const entries = []
+    db.collection('live_bike_auction').find()
+    .forEach(entry => entries.push(entry))
+    .then(function(){
+        response.status(200).json(entries)
+    }).catch(function(){
+        response.status(500).json({
+            "status": "could not fetch data"
+        })
+    })
+
+})
+
 app.get('/bikebidded_details',verifyToken,async(request,response)=>{
    try{
     const biddetails = []
