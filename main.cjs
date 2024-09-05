@@ -120,6 +120,14 @@ app.get('/getlivebikedetails',function(request, response){
 
 })
 
+app.get('/loginuser',verifyToken,async(request,response) =>{
+    try{
+        response.json(request.userEmail)
+    }
+    catch{
+        response.json("login first")
+    }
+})
 app.get('/bikebidded_details',verifyToken,async(request,response)=>{
    try{
     const biddetails = []
